@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16
+    container_name: atech_db
+    environment:
+      POSTGRES_DB: atechdb
+      POSTGRES_USER: atech
+      POSTGRES_PASSWORD: atechpass
+    ports:
+      - "5432:5432"   # o "5433:5432" si mantienes Postgres local en 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U atech -d atechdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .                       # <— raíz del repo
+      dockerfile: backend/Atech/Dockerfile
+    container_name: atech_backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: atechdb
+      DB_USERNAME: atech
+      DB_PASSWORD: atechpass
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
+
