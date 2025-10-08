@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   backend:
-    image: kenner23016/atech:latest   # <-- tu imagen en Docker Hub
+    image: kenner23016/atech:v1   # <-- tu imagen en Docker Hub
     container_name: atech_backend
     depends_on:
       db:
