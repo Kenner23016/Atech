@@ -3,6 +3,18 @@
     "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug"
+    "logLevel": "debug",
+    "headers": {
+      "Authorization": "Basic YWRtaW46YWRtaW4xMjM="
+    }
+  },
+  "/actuator": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "headers": {
+      "Authorization": "Basic YWRtaW46YWRtaW4xMjM="
+    }
   }
 }
