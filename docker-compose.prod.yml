@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: kenner23016/atech-backend:${TAG}
+    container_name: atech_backend_prod
+    env_file: 
+      - .env.prod
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    image: kenner23016/atech-frontend:${TAG}
+    container_name: atech_frontend_prod
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+

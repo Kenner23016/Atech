@@ -1,15 +1,18 @@
 {
   "/api": {
-    "target": "http://localhost:8080",
+    "target": "http://backend:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
     "headers": {
       "Authorization": "Basic YWRtaW46YWRtaW4xMjM="
     }
+    /* Si tu backend NO expone /api como prefijo, agrega:
+    ,"pathRewrite": { "^/api": "" }
+    */
   },
   "/actuator": {
-    "target": "http://localhost:8080",
+    "target": "http://backend:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",
