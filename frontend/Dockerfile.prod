@@ -8,10 +8,15 @@ RUN npm run build -- --configuration production
 
 # B) Nginx para servir SPA y proxy /api
 FROM nginx:1.27-alpine
+
+# borra default y coloca el tuyo
 RUN rm -f /etc/nginx/conf.d/default.conf
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# 👇 Como tu proyecto se llama "frontend", el output está en dist/frontend/
-COPY dist/frontend/ /usr/share/nginx/html
+# ⬇️ COPIA DESDE EL STAGE DE BUILD (¡clave!)
+# Opción 1 (más común):
+COPY --from=build /app/dist/frontend/ /usr/share/nginx/html
+# Si te falla porque Angular dejó los archivos en "browser/", comenta la de arriba y descomenta esta:
+# COPY --from=build /app/dist/frontend/browser/ /usr/share/nginx/html
 
 EXPOSE 80
