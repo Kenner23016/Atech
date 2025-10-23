@@ -1,21 +1,21 @@
-version: "3.9"
 services:
-  backend:
-    image: kenner23016/atech-backend:${TAG}
-    env_file: .env.prod
-    ports:
-      - "8080:8080"
-    networks: [appnet]
-
   frontend:
     image: kenner23016/atech-frontend:${TAG}
     depends_on: [backend]
+    # Atención: solo lo exponemos en loopback (no público)
     ports:
-      - "80:80"
+      - "127.0.0.1:8081:80"
     networks: [appnet]
 
-networks:
-  appnet: {}
+  backend:
+    image: kenner23016/atech-backend:${TAG}
+    env_file: .env.prod
+    # Si quieres ocultarlo también, puedes hacer:
+    # ports:
+    #   - "127.0.0.1:8080:8080"
+    ports:
+      - "8080:8080"
+    networks: [appnet]
 
 
 
