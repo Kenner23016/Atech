@@ -2,8 +2,6 @@
 # Atech – Guía rápida para levantar en local
 Guía para levantar **Angular + Spring Boot + PostgreSQL** en local usando **Docker**. No
 necesitas tener Java/Node instalados: con Docker basta.
-> ■■ **Importante:** No subas claves reales. Si editas `.env.local`, evita commitearlo a
-repos públicos.
 ---
 ## ■ Resumen rápido
 - **Frontend (Angular):** <http://localhost:4200>
