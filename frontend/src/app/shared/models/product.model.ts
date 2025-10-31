@@ -9,3 +9,5 @@ export interface Product {
   cantidad: number;
   imagen: string;
 }
+
+export { ProductState };

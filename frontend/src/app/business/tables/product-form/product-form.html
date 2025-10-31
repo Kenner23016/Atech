@@ -1,0 +1,125 @@
+<div class="p-6 max-w-3xl mx-auto">
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      {{ isEdit ? 'Editar producto' : 'Nuevo producto' }}
+    </h2>
+    <button
+      type="button"
+      (click)="goBack()"
+      class="text-sm text-gray-600 hover:text-gray-800">
+      ← Volver
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="bg-white rounded shadow p-4 text-gray-500">
+    Cargando datos del producto...
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="form" (ngSubmit)="onSubmit()" class="bg-white rounded shadow p-6 space-y-4">
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Título</label>
+      <input
+        type="text"
+        formControlName="titulo"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200" />
+      <p *ngIf="hasError('titulo','required')" class="text-red-500 text-sm mt-1">
+        El título es obligatorio.
+      </p>
+      <p *ngIf="hasError('titulo','maxlength')" class="text-red-500 text-sm mt-1">
+        Máximo 100 caracteres.
+      </p>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Descripción</label>
+      <textarea
+        rows="3"
+        formControlName="descripcion"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200"></textarea>
+      <p *ngIf="hasError('descripcion','required')" class="text-red-500 text-sm mt-1">
+        La descripción es obligatoria.
+      </p>
+      <p *ngIf="hasError('descripcion','maxlength')" class="text-red-500 text-sm mt-1">
+        Máximo 500 caracteres.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+        <select
+          formControlName="estado"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200">
+          <option *ngFor="let est of estados" [value]="est.value">{{ est.label }}</option>
+        </select>
+        <p *ngIf="hasError('estado','required')" class="text-red-500 text-sm mt-1">
+          El estado es obligatorio.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Precio (USD)</label>
+        <input
+          type="number"
+          step="0.01"
+          formControlName="precio"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200" />
+        <p *ngIf="hasError('precio','required')" class="text-red-500 text-sm mt-1">
+          El precio es obligatorio.
+        </p>
+        <p *ngIf="hasError('precio','min')" class="text-red-500 text-sm mt-1">
+          El precio no puede ser negativo.
+        </p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Cantidad</label>
+        <input
+          type="number"
+          formControlName="cantidad"
+          class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200" />
+        <p *ngIf="hasError('cantidad','required')" class="text-red-500 text-sm mt-1">
+          La cantidad es obligatoria.
+        </p>
+        <p *ngIf="hasError('cantidad','min')" class="text-red-500 text-sm mt-1">
+          La cantidad no puede ser negativa.
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mb-1">URL de la imagen</label>
+      <input
+        type="text"
+        formControlName="imagen"
+        class="w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-200" />
+      <p *ngIf="hasError('imagen','required')" class="text-red-500 text-sm mt-1">
+        La imagen es obligatoria.
+      </p>
+      <p *ngIf="hasError('imagen','maxlength')" class="text-red-500 text-sm mt-1">
+        Máximo 255 caracteres.
+      </p>
+    </div>
+
+    <div *ngIf="errorMsg" class="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded">
+      {{ errorMsg }}
+    </div>
+
+    <div class="flex gap-3">
+      <button
+        type="submit"
+        [disabled]="form.invalid || saving"
+        class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white px-4 py-2 rounded-md text-sm font-medium">
+        {{ saving ? 'Guardando...' : (isEdit ? 'Actualizar' : 'Crear') }}
+      </button>
+      <button
+        type="button"
+        (click)="goBack()"
+        class="bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium">
+        Cancelar
+      </button>
+    </div>
+
+  </form>
+</div>

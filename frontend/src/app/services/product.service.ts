@@ -1,8 +1,6 @@
-// src/app/services/product.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
 import { Product } from '../shared/models/product.model';
 
 @Injectable({
@@ -10,9 +8,10 @@ import { Product } from '../shared/models/product.model';
 })
 export class ProductService {
 
-  private apiUrl = 'http://localhost:8080/api/products'; 
+  // importante: URL relativa, así sirve en local, docker y nginx
+  private readonly apiUrl = '/api/products';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(this.apiUrl);
@@ -30,7 +29,7 @@ export class ProductService {
     return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
   }
 
-  deleteProduct(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
