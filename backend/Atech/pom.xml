@@ -58,6 +58,12 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- Validación (Jakarta Bean Validation) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    
     <!-- Test -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
