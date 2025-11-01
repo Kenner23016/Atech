@@ -1,37 +1,27 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
+import { guestGuard } from './core/auth/guest.guard';
 
 export const routes: Routes = [
-    {
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./features/auth/login/login.component').then(m => m.LoginComponent),
+  },
+  {
     path: '',
-    loadComponent: () => import('./components/layout/layout').then(m => m.default),
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./components/layout/layout.component').then(m => m.default), 
     children: [
-        {
-            path: 'dashboard',
-            loadComponent: () => import('./business/dashboard/dashboard').then(m => m.default),
-
-        },
-         {
-            path: 'profile',
-            loadComponent: () => import('./business/profile/profile').then(m => m.default),
-
-        },
-         {
-            path: 'tables',
-            loadComponent: () => import('./business/tables/tables').then(m => m.default),
-
-        },
-        {
-            path: '',
-            redirectTo: 'dashboard',
-            pathMatch: 'full'
-        }
-
-]
-
-        },
-        {
-            path: '**',
-            redirectTo: 'dashboard'
-
-        }
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./business/dashboard/dashboard.component').then(m => m.default),
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
+    ]
+  },
+  { path: '**', redirectTo: 'login' }
 ];

@@ -1,0 +1,101 @@
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../core/auth/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  template: `
+  <div class="bg-purple-900 absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-900 to-purple-800 -z-10"></div>
+
+  <div class="relative min-h-screen sm:flex sm:flex-row justify-center items-center p-4">
+    <div class="hidden lg:flex flex-col text-gray-300 lg:px-14 sm:max-w-4xl xl:max-w-md">
+      <h1 class="my-3 font-semibold text-4xl">Bienvenido Ecommerce Atech</h1>
+      <p class="pr-3 text-sm opacity-75">Ingresa con tu usuario y contraseña para continuar.</p>
+    </div>
+
+    <div class="flex justify-center w-full sm:w-auto">
+      <div class="p-12 bg-white mx-auto rounded-3xl w-96 shadow-xl">
+        <div class="mb-7">
+          <h3 class="font-semibold text-2xl text-gray-800">Sign In</h3>
+          <p class="text-gray-500 text-sm">
+            Don't have an account?
+            <a class="text-purple-700 hover:text-purple-800 cursor-pointer">Sign Up</a>
+          </p>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
+          <div>
+            <input formControlName="username" type="text" autocomplete="username" placeholder="Email or username"
+              class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400 text-gray-900 placeholder-gray-500"/>
+            <p *ngIf="touched('username') && invalid('username')" class="text-xs text-red-600 mt-1">Usuario requerido</p>
+          </div>
+
+          <div class="relative">
+            <input formControlName="password" [type]="show ? 'password' : 'text'" autocomplete="current-password" placeholder="Password"
+              class="w-full text-sm px-4 py-3 bg-gray-200 focus:bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:border-purple-400 text-gray-900 placeholder-gray-500"/>
+            <button type="button" (click)="show = !show"
+              class="flex items-center absolute inset-y-0 right-0 mr-3 text-sm leading-5 text-purple-700">
+              <svg *ngIf="show" class="h-4 w-4" viewBox="0 0 576 512" fill="currentColor"><path d="M572.52 241.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400a144 144 0 1 1 144-144 143.93 143.93 0 0 1-144 144z"/></svg>
+              <svg *ngIf="!show" class="h-4 w-4" viewBox="0 0 640 512" fill="currentColor"><path d="M320 400c-75.85 0-137.25-58.71-142.9-133.11L72.2 185.82c-13.79 17.3-26.48 35.59-36.72 55.59a32.35 32.35 0 0 0 0 29.19C89.71 376.41 197.07 448 320 448c26.91 0 52.87-4 77.89-10.46L346 397.39a144.13 144.13 0 0 1-26 2.61zM633.82 458.1 523.27 372.66a331.25 331.25 0 0 0 81.25-102.07 32.35 32.35 0 0 0 0-29.19C550.29 135.59 442.93 64 320 64a308.15 308.15 0 0 0-147.32 37.7L45.46 3.37A16 16 0 0 0 23 6.18L3.37 31.45A16 16 0 0 0 6.18 53.9L594.54 508.63a16 16 0 0 0 22.46-2.81l19.64-25.27a16 16 0 0 0-2.82-22.45z"/></svg>
+            </button>
+            <p *ngIf="touched('password') && invalid('password')" class="text-xs text-red-600 mt-1">Contraseña requerida</p>
+          </div>
+
+          <div class="flex justify-end">
+            <a class="text-sm text-purple-700 hover:text-purple-600 cursor-pointer">Forgot your password?</a>
+          </div>
+
+          <button type="submit" [disabled]="form.invalid || loading"
+            class="w-full flex justify-center bg-purple-800 hover:bg-purple-700 text-white p-3 rounded-lg font-semibold transition disabled:opacity-50">
+            <svg *ngIf="loading" class="animate-spin h-4 w-4 mr-2" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"/>
+            </svg>
+            <span>{{ loading ? 'Entrando...' : 'Sign in' }}</span>
+          </button>
+
+          <p *ngIf="error" class="text-center text-sm text-red-600">{{ error }}</p>
+        </form>
+
+        <div class="text-center text-gray-400 text-xs mt-6">© {{year}} Atech — Seguridad JWT</div>
+      </div>
+    </div>
+  </div>
+  `,
+})
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  show = true;
+  loading = false;
+  error: string | null = null;
+  year = new Date().getFullYear();
+
+  form = this.fb.nonNullable.group({
+    username: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+
+  touched(c: 'username'|'password'){ return this.form.controls[c].touched; }
+  invalid(c: 'username'|'password'){ return this.form.controls[c].invalid; }
+
+  onSubmit() {
+    if (this.form.invalid || this.loading) return;
+    this.loading = true; this.error = null;
+    const { username, password } = this.form.getRawValue();
+    this.auth.login(username, password).subscribe({
+      next: () => { this.loading = false; this.router.navigateByUrl('/dashboard'); },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.error = (typeof err?.error === 'string' && err.error) || 'Credenciales inválidas';
+      }
+    });
+  }
+}
