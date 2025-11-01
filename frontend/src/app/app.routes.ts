@@ -1,48 +1,63 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./components/layout/layout').then(m => m.default),
+    // este es tu layout real
+    loadComponent: () =>
+      import('./components/layout/layout').then((m) => m.default),
     children: [
+      // ====== PÚBLICO / PRINCIPAL ======
       {
         path: 'dashboard',
-        loadComponent: () => import('./business/dashboard/dashboard').then(m => m.default)
+        loadComponent: () =>
+          import('./business/dashboard/dashboard').then((m) => m.default),
       },
+
+      // ====== PROTEGIDOS ======
       {
         path: 'profile',
-        loadComponent: () => import('./business/profile/profile').then(m => m.default)
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./business/profile/profile').then((m) => m.default),
       },
       {
         path: 'tables',
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('./business/tables/tables').then(m => m.default)
-          },
-          {
-            path: 'new',
-            loadComponent: () =>
-              import('./business/tables/product-form/product-form').then(m => m.default),
-            data: { mode: 'create' }
-          },
-          {
-            path: 'edit/:id',
-            loadComponent: () =>
-              import('./business/tables/product-form/product-form').then(m => m.default),
-            data: { mode: 'edit' }
-          }
-        ]
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./business/tables/tables').then((m) => m.default),
       },
+      {
+        path: 'tables/new',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./business/tables/product-form/product-form').then(
+            (m) => m.default
+          ),
+      },
+      {
+        path: 'tables/edit/:id',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./business/tables/product-form/product-form').then(
+            (m) => m.default
+          ),
+      },
+
+      // ====== REDIRECT POR DEFECTO ======
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard'
-      }
-    ]
+        redirectTo: 'dashboard',
+      },
+    ],
   },
+
+  // cualquier cosa rara -> al dashboard
   {
     path: '**',
-    redirectTo: 'dashboard'
-  }
+    redirectTo: 'dashboard',
+  },
 ];
+
