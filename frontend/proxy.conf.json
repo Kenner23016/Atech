@@ -3,21 +3,18 @@
     "target": "http://backend:8080",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug",
-    "headers": {
-      "Authorization": "Basic YWRtaW46YWRtaW4xMjM="
-    }
-    /* Si tu backend NO expone /api como prefijo, agrega:
-    ,"pathRewrite": { "^/api": "" }
-    */
+    "logLevel": "debug"
   },
-  "/actuator": {
+  "/login": {
     "target": "http://backend:8080",
     "secure": false,
     "changeOrigin": true,
-    "logLevel": "debug",
-    "headers": {
-      "Authorization": "Basic YWRtaW46YWRtaW4xMjM="
-    }
+    "logLevel": "debug"
+  },
+  "/logout": {
+    "target": "http://backend:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
