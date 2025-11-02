@@ -2,6 +2,14 @@ import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
+  // ====== LOGIN (SPA) ======
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login').then((m) => m.default),
+  },
+
+  // ====== LAYOUT PRINCIPAL ======
   {
     path: '',
     // este es tu layout real
@@ -33,7 +41,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () =>
           import('./business/tables/product-form/product-form').then(
-            (m) => m.default
+            (m) => m.default,
           ),
       },
       {
@@ -41,7 +49,7 @@ export const routes: Routes = [
         canActivate: [authGuard],
         loadComponent: () =>
           import('./business/tables/product-form/product-form').then(
-            (m) => m.default
+            (m) => m.default,
           ),
       },
 

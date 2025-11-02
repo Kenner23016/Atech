@@ -1,0 +1,76 @@
+<!-- frontend/src/app/auth/login/login.html -->
+<div
+  class="min-h-screen grid place-items-center bg-gradient-to-b from-gray-900 via-gray-900 to-purple-900"
+>
+  <form
+    class="w-full max-w-sm space-y-4 bg-white/10 backdrop-blur-xl p-6 rounded-2xl border border-white/10 text-white"
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <h1 class="text-2xl font-semibold text-center">Iniciar sesión</h1>
+
+    <!-- USER -->
+    <div>
+      <label class="text-sm">Usuario o correo</label>
+      <input
+        class="w-full mt-1 px-3 py-2 rounded-xl bg-white/10 border border-white/20 outline-none"
+        type="text"
+        placeholder="demo"
+        formControlName="email"
+        autocomplete="username"
+      />
+    </div>
+
+    <!-- PASSWORD -->
+    <div>
+      <label class="text-sm">Contraseña</label>
+      <input
+        class="w-full mt-1 px-3 py-2 rounded-xl bg-white/10 border border-white/20 outline-none"
+        [type]="showPassword ? 'text' : 'password'"
+        placeholder="••••••"
+        formControlName="password"
+        autocomplete="current-password"
+      />
+      <button
+        type="button"
+        class="text-xs mt-1 underline"
+        (click)="togglePassword()"
+      >
+        Mostrar / ocultar
+      </button>
+    </div>
+
+    <!-- REMEMBER -->
+    <label class="inline-flex items-center gap-2 text-sm">
+      <input
+        type="checkbox"
+        formControlName="remember"
+        class="size-4 rounded bg-purple-500"
+      />
+      Recordarme
+    </label>
+
+    <!-- ERROR -->
+    <div
+      *ngIf="errorMsg"
+      class="text-sm text-rose-300 bg-rose-500/10 border border-rose-300/30 rounded-lg px-3 py-2"
+    >
+      {{ errorMsg }}
+    </div>
+
+    <!-- SUBMIT -->
+    <button
+      class="w-full py-2 rounded-xl bg-purple-500 hover:bg-purple-600 transition disabled:opacity-50 disabled:cursor-not-allowed"
+      [disabled]="isSubmitting"
+      type="submit"
+    >
+      {{ isSubmitting ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <p class="text-xs text-center text-white/50 pt-2">
+      Usa
+      <code class="bg-white/5 px-1 rounded">demo</code> /
+      <code class="bg-white/5 px-1 rounded">demo123</code>
+    </p>
+  </form>
+</div>
