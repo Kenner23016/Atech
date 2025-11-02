@@ -1,5 +1,6 @@
 package com.ADS.Atech.backend.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,49 +26,50 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
-            // es demo -> sin CSRF
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> auth
-                // ====== PÚBLICO ======
-                .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/error").permitAll()
-
-                // ====== MARKETPLACE PÚBLICO ======
-                // tu marketplace usa GET /api/products -> lo dejamos libre
-                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
-
-                // este lo vamos a usar desde Angular para saber si ya hay sesión
-                .requestMatchers("/api/auth/me").authenticated()
-
-                // ====== TODO LO DEMÁS: LOGIN ======
-                .anyRequest().authenticated()
-            )
-            // login por defecto de spring
-            .formLogin(form -> form
-                .permitAll()
-                // 👇👇 AQUÍ EL CAMBIO: después de loguear, mándame al frontend
-                .defaultSuccessUrl("http://localhost:4200/", true)
-            )
-            // por si quieres probar con postman
-            .httpBasic(Customizer.withDefaults())
-            // si la llamada vino de /api/** y no estás logueado -> 401 (no HTML)
-            .exceptionHandling(ex -> ex
-                .defaultAuthenticationEntryPointFor(
-                    new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
-                    new AntPathRequestMatcher("/api/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers("/api/auth/me").authenticated()
+                        .anyRequest().authenticated()
                 )
-            );
+                .formLogin(form -> form
+                        .loginProcessingUrl("/login")
+                        .successHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                            response.setContentType("application/json");
+                            String json = """
+                                    {"username":"%s"}
+                                    """.formatted(authentication.getName());
+                            response.getWriter().write(json);
+                        })
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\":\"Bad credentials\"}");
+                        })
+                )
+                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling(ex -> ex
+                        .defaultAuthenticationEntryPointFor(
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                new AntPathRequestMatcher("/api/**")
+                        )
+                );
 
         return http.build();
     }
 
-    // CORS para poder llamar desde http://localhost:4200
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
+        // orígenes típicos en desarrollo
         cfg.setAllowedOrigins(List.of(
                 "http://localhost:4200",
-                "http://127.0.0.1:4200"
+                "http://127.0.0.1:4200",
+                "http://localhost",           // por si sirves el front en 80
+                "http://127.0.0.1"            // idem
         ));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         cfg.setAllowedHeaders(List.of("*"));
@@ -78,6 +80,5 @@ public class SecurityConfig {
         return source;
     }
 }
-
 
 

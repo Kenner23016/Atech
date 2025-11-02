@@ -23,11 +23,10 @@ export default class Login implements OnInit {
   isSubmitting = false;
   errorMsg = '';
 
-  // NOTA IMPORTANTE:
   // en tu backend el usuario es "demo" (sin @)
   // por eso aquí NO pongo Validators.email, solo required
   loginForm = this.fb.group({
-    email: ['', [Validators.required]], // puede ser "demo"
+    email: ['', [Validators.required]],
     password: ['', [Validators.required]],
     remember: [true],
   });
@@ -59,11 +58,11 @@ export default class Login implements OnInit {
     this.isSubmitting = true;
     this.errorMsg = '';
 
-    // 👇 Spring Security (con formLogin) espera EXACTAMENTE esto:
+    // Spring Security (con formLogin) espera EXACTAMENTE esto:
     // Content-Type: application/x-www-form-urlencoded
     // body: username=<user>&password=<pass>
     const body = new HttpParams()
-      .set('username', email) // ← mapeamos tu "email" al username de Spring
+      .set('username', email) // mapeamos tu "email" al username de Spring
       .set('password', password);
 
     this.http
@@ -81,7 +80,7 @@ export default class Login implements OnInit {
         switchMap(() =>
           this.http.get<{ username: string }>('/api/auth/me', {
             withCredentials: true,
-          })
+          }),
         ),
         catchError((err) => {
           console.error('Error en login', err);
@@ -90,7 +89,7 @@ export default class Login implements OnInit {
         }),
         finalize(() => {
           this.isSubmitting = false;
-        })
+        }),
       )
       .subscribe((me) => {
         if (!me) {
@@ -106,8 +105,11 @@ export default class Login implements OnInit {
         }
 
         // si venía de una ruta protegida, el guard la manda como returnUrl
+        const qpReturn = this.route.snapshot.queryParamMap.get('returnUrl');
+
+        // 👇 aquí está el truco para que NO te regrese al login
         const returnUrl =
-          this.route.snapshot.queryParamMap.get('returnUrl') || '/dashboard';
+          !qpReturn || qpReturn === '/login' ? '/dashboard' : qpReturn;
 
         this.router.navigateByUrl(returnUrl);
       });
