@@ -2,9 +2,16 @@ import { Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
+  // 🔑 Login (top-level, antes del layout)
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./auth/login/login').then((m) => m.default),
+  },
+
+  // 🧱 Layout principal
   {
     path: '',
-    // este es tu layout real
     loadComponent: () =>
       import('./components/layout/layout').then((m) => m.default),
     children: [
@@ -49,7 +56,7 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard',
+        redirectTo: 'dashboard', // 👈 sigue iniciando en dashboard
       },
     ],
   },
@@ -60,4 +67,3 @@ export const routes: Routes = [
     redirectTo: 'dashboard',
   },
 ];
-

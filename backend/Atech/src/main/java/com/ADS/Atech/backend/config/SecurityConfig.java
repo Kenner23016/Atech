@@ -24,7 +24,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
+      /*   http
             // es demo -> sin CSRF
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())
@@ -57,6 +57,37 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/api/**")
                 )
             );
+*/
+
+http
+    .csrf(AbstractHttpConfigurer::disable)
+    .cors(Customizer.withDefaults())
+    .authorizeHttpRequests(auth -> auth
+        // Público del frontend (irrelevante si sirves Angular con Nginx, pero no estorba)
+        .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico", "/error").permitAll()
+
+        // Público en tu API
+        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+
+        // Requiere sesión si existiera; si no hay, devolverá 401 (no redirección)
+        .requestMatchers("/api/auth/me").authenticated()
+
+        // Todo lo demás protegido
+        .anyRequest().authenticated()
+    )
+    // 🔴 Desactiva el login HTML de Spring
+    .formLogin(AbstractHttpConfigurer::disable)
+
+    // (Opcional) Deja BASIC para probar con Postman
+    .httpBasic(Customizer.withDefaults())
+
+    // Si pegan a /api/** sin estar logueados -> 401
+    .exceptionHandling(ex -> ex
+        .defaultAuthenticationEntryPointFor(
+            new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+            new AntPathRequestMatcher("/api/**")
+        )
+    );
 
         return http.build();
     }
@@ -76,7 +107,10 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
-    }
+    } 
+
+
+
 }
 
 
