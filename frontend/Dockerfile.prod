@@ -15,7 +15,7 @@ COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # ⬇️ COPIA DESDE EL STAGE DE BUILD (¡clave!)
 # Opción 1 (más común):
-COPY --from=build /app/dist/frontend/ /usr/share/nginx/html
+COPY --from=build /app/dist/frontend/browser/ /usr/share/nginx/html
 # Si te falla porque Angular dejó los archivos en "browser/", comenta la de arriba y descomenta esta:
 # COPY --from=build /app/dist/frontend/browser/ /usr/share/nginx/html
 
