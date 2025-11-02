@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,32 +22,91 @@
     </script>
     <script type="module" src="https://unpkg.com/heroicons@2.1.1/24/outline/index.js"></script>
 </head>
+
 <body class="bg-gray-100 antialiased">
 
-    
+
     <main class="container mx-auto max-w-screen-xl px-4 py-8">
-        
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Anuncios Destacados</h2>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800">Anuncios Destacados</h2>
+            <button (click)="irACrearProducto()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium">
+                + Nuevo Producto
+            </button>
+        </div>
+
+        <div *ngIf="loading" class="p-4 bg-white rounded shadow text-gray-500">
+            Cargando productos...
+        </div>
+
+        <div *ngIf="!loading && products.length === 0" class="p-4 bg-white rounded shadow text-gray-500">
+            Aún no has creado ningún producto. ¡Añade uno!
+        </div>
+
+        <div *ngIf="!loading && products.length > 0"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+            <div *ngFor="let prod of products"
+                class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col">
+
+                <img [src]="prod.imagen" [alt]="prod.titulo" class="w-full h-40 object-cover">
+
+                <div class="p-3 flex flex-col flex-grow">
+
+                    <span class="inline-block text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start" [ngClass]="{
+          'bg-green-100 text-green-800': prod.estado === 'NUEVO',
+          'bg-yellow-100 text-yellow-800': prod.estado === 'USADO'
+        }">
+                        {{ prod.estado }}
+                    </span>
+
+                    <h3 class="text-xl font-bold text-gray-900">
+                        {{ prod.precio | currency : 'USD' : 'symbol' : '1.2-2' }}
+                    </h3>
+
+                    <p class="text-sm text-gray-700 mt-1 flex-grow">
+                        {{ prod.titulo }}
+                    </p>
+
+                    <p class="text-xs text-gray-500 mt-3">
+                        Cantidad disponible: <span class="font-medium">{{ prod.cantidad }}</span>
+                    </p>
+
+                    <div class="flex gap-3 mt-4 pt-3 border-t border-gray-100">
+                        <button (click)="onEdit(prod)"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded hover:bg-indigo-700">
+                            Editar
+                        </button>
+                        <button (click)="onDelete(prod.id)"
+                            class="flex-1 inline-flex items-center justify-center px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700">
+                            Eliminar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>
-                
-                
-    <a href="#">
-    <img 
-      src="https://images.unsplash.com/photo-1640061932297-3c726330b66b?w=400&auto=format&fit=crop" 
-      alt="Macbook Pro 14 M1 Pro" 
-      class="w-full h-40 object-cover">
-</a>
-                
+
+
+                <a href="#">
+                    <img src="https://images.unsplash.com/photo-1640061932297-3c726330b66b?w=400&auto=format&fit=crop"
+                        alt="Macbook Pro 14 M1 Pro" class="w-full h-40 object-cover">
+                </a>
+
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
                         USADO
                     </span>
                     <h3 class="text-xl font-bold text-gray-900">$850.00</h3>
@@ -59,16 +119,21 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>
                 <a href="#">
-                    <img src="https://placehold.co/400x300/F0FFF4/333?text=Smartphone+Nuevo" alt="Producto 2" class="w-full h-40 object-cover">
+                    <img src="https://placehold.co/400x300/F0FFF4/333?text=Smartphone+Nuevo" alt="Producto 2"
+                        class="w-full h-40 object-cover">
                 </a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
+                    <span
+                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
                         NUEVO
                     </span>
                     <h3 class="text-xl font-bold text-gray-900">$1,199.00</h3>
@@ -81,16 +146,21 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>
                 <a href="#">
-                    <img src="https://placehold.co/400x300/FEF2F2/333?text=Consola" alt="Producto 3" class="w-full h-40 object-cover">
+                    <img src="https://placehold.co/400x300/FEF2F2/333?text=Consola" alt="Producto 3"
+                        class="w-full h-40 object-cover">
                 </a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
                         USADO
                     </span>
                     <h3 class="text-xl font-bold text-gray-900">$450.00</h3>
@@ -103,16 +173,21 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>
                 <a href="#">
-                    <img src="https://placehold.co/400x300/FFFBEB/333?text=Audífonos" alt="Producto 4" class="w-full h-40 object-cover">
+                    <img src="https://placehold.co/400x300/FFFBEB/333?text=Audífonos" alt="Producto 4"
+                        class="w-full h-40 object-cover">
                 </a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
+                    <span
+                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
                         NUEVO
                     </span>
                     <h3 class="text-xl font-bold text-gray-900">$220.00</h3>
@@ -125,16 +200,21 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
                     </svg>
                 </button>
                 <a href="#">
-                    <img src="https://placehold.co/400x300/EBF8FF/333?text=Monitor" alt="Producto 5" class="w-full h-40 object-cover">
+                    <img src="https://placehold.co/400x300/EBF8FF/333?text=Monitor" alt="Producto 5"
+                        class="w-full h-40 object-cover">
                 </a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
                         USADO
                     </span>
                     <h3 class="text-xl font-bold text-gray-900">$300.00</h3>
@@ -147,10 +227,13 @@
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://placehold.co/400x300/F9F5FF/333?text=GPU" alt="Producto 6" class="w-full h-40 object-cover"></a>
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
+                <a href="#"><img src="https://placehold.co/400x300/F9F5FF/333?text=GPU" alt="Producto 6"
+                        class="w-full h-40 object-cover"></a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
                     <h3 class="text-xl font-bold text-gray-900">$650.00</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">Tarjeta de Video RTX 3070 8GB</p>
                     <p class="text-xs text-gray-500 mt-3">San Salvador · Hoy, 11:15 AM</p>
@@ -158,10 +241,13 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://placehold.co/400x300/E6FFFA/333?text=Tablet" alt="Producto 7" class="w-full h-40 object-cover"></a>
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
+                <a href="#"><img src="https://placehold.co/400x300/E6FFFA/333?text=Tablet" alt="Producto 7"
+                        class="w-full h-40 object-cover"></a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
+                    <span
+                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
                     <h3 class="text-xl font-bold text-gray-900">$420.00</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">Tablet Pro 11" 128GB + Lápiz</p>
                     <p class="text-xs text-gray-500 mt-3">Antiguo Cuscatlán · Ayer, 04:00 PM</p>
@@ -169,32 +255,41 @@
             </div>
 
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://placehold.co/400x300/FFF5EB/333?text=Teclado" alt="Producto 8" class="w-full h-40 object-cover"></a>
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
+                <a href="#"><img src="https://placehold.co/400x300/FFF5EB/333?text=Teclado" alt="Producto 8"
+                        class="w-full h-40 object-cover"></a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
                     <h3 class="text-xl font-bold text-gray-900">$110.00</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">Teclado Mecánico Inalámbrico 65%</p>
                     <p class="text-xs text-gray-500 mt-3">San Salvador · Hace 1 hora</p>
                 </div>
             </div>
 
-             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://placehold.co/400x300/F3F4F6/333?text=Drone" alt="Producto 9" class="w-full h-40 object-cover"></a>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
+                <a href="#"><img src="https://placehold.co/400x300/F3F4F6/333?text=Drone" alt="Producto 9"
+                        class="w-full h-40 object-cover"></a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
+                    <span
+                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
                     <h3 class="text-xl font-bold text-gray-900">$380.00</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">Drone Mini 2 Fly More Combo</p>
                     <p class="text-xs text-gray-500 mt-3">La Libertad · Hace 3 días</p>
                 </div>
             </div>
 
-             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://placehold.co/400x300/ECFEFF/333?text=Smartwatch" alt="Producto 10" class="w-full h-40 object-cover"></a>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
+                <button
+                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
+                <a href="#"><img src="https://placehold.co/400x300/ECFEFF/333?text=Smartwatch" alt="Producto 10"
+                        class="w-full h-40 object-cover"></a>
                 <div class="p-3 flex flex-col flex-grow">
-                    <span class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
+                    <span
+                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
                     <h3 class="text-xl font-bold text-gray-900">$299.00</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">Smartwatch Series 9 GPS</p>
                     <p class="text-xs text-gray-500 mt-3">San Salvador · Hoy, 12:00 PM</p>
@@ -202,17 +297,19 @@
             </div>
 
         </div>
-        
+
         <div class="text-center mt-12">
-            <button class="bg-white text-atech-blue font-semibold py-3 px-8 rounded-full border-2 border-atech-blue hover:bg-atech-blue hover:text-white transition-all duration-300">
+            <button
+                class="bg-white text-atech-blue font-semibold py-3 px-8 rounded-full border-2 border-atech-blue hover:bg-atech-blue hover:text-white transition-all duration-300">
                 Cargar más anuncios
             </button>
         </div>
 
     </main>
 
-    
+
 
 
 </body>
+
 </html>
