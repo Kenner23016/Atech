@@ -9,18 +9,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
       if (err.status === 401) {
-        // ruta actual en la que ESTÁ el usuario
         const isOnLogin = router.url.startsWith('/login');
-
-        // petición que falló
         const isAuthCheck = req.url.endsWith('/api/auth/me');
         const isLoginCall = req.url.endsWith('/login');
+        const isLogoutCall = req.url.endsWith('/logout');
 
-        // 👉 solo redirigimos si:
-        // - no estamos ya en /login
-        // - y la petición que falló NO es el "checa si estoy logueado"
-        // - y la petición que falló NO es el propio /login
-        if (!isOnLogin && !isAuthCheck && !isLoginCall) {
+        // 👉 solo redirigimos si NO estamos en login
+        // y si la petición NO era /api/auth/me, NI /login, NI /logout
+        if (!isOnLogin && !isAuthCheck && !isLoginCall && !isLogoutCall) {
           router.navigate(['/login'], {
             queryParams: { returnUrl: router.url },
           });
