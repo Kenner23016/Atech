@@ -1,23 +1,36 @@
+version: "3.8"
+
 services:
   backend:
+    # Usamos la imagen ya construida y subida a Docker Hub
     image: kenner23016/atech-backend:${TAG}
-    env_file: .env.prod
-    # opcional: ocultar backend también en loopback
+    env_file:
+      - .env.prod
+    # Solo expuesto en loopback del host (para que el Nginx del servidor lo vea)
     ports:
       - "127.0.0.1:8080:8080"
-    networks: [appnet]
+    networks:
+      - appnet
 
   frontend:
-    image: kenner23016/atech-frontend:${TAG}
-    depends_on: [backend]
-    # frontend expuesto SOLO en loopback para que lo proxyee el Nginx del host
+    # AHORA: Angular dev server con proxy.conf.json en lugar de Nginx
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - backend
+    # No es estrictamente necesario, pero así tienes las mismas vars
+    env_file:
+      - .env.prod
+    environment:
+      # El dev server escucha en todas las interfaces del contenedor
+      HOST: 0.0.0.0
+    # Exponemos el Angular dev server en el 8081 del host
     ports:
-      - "127.0.0.1:8081:80"
-    networks: [appnet]
+      - "127.0.0.1:8081:4200"
+    networks:
+      - appnet
 
 networks:
   appnet: {}
-
-
-
 
