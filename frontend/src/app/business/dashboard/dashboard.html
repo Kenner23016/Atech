@@ -46,8 +46,9 @@
         <div *ngIf="!loading && products.length > 0"
             class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
 
-            <div *ngFor="let prod of products"
-                class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col">
+            <ng-container *ngFor="let prod of products">
+                <div *ngIf="!estaComprado(prod.id)"
+                    class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col">
 
                 <img [src]="prod.imagen" [alt]="prod.titulo" class="w-full h-40 object-cover">
 
@@ -84,11 +85,14 @@
                     </div>
                 </div>
             </div>
+            </ng-container>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-4">
 
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
+            <ng-container *ngFor="let prod of productosEjemplo">
+                <div *ngIf="!estaComprado(prod.id)"
+                    class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
                 <button
                     class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
@@ -98,26 +102,24 @@
                     </svg>
                 </button>
 
-
                 <a href="#">
-                    <img src="https://www.notebookcheck.org/fileadmin/Notebooks/Apple/MacBook_Pro_14_2024_M4/IMG_7747.JPG"
-                        alt="Macbook Pro 14 M1 Pro" class="w-full h-40 object-cover">
+                    <img [src]="prod.imagen" [alt]="prod.titulo" class="w-full h-40 object-cover">
                 </a>
 
                 <div class="p-3 flex flex-col flex-grow">
                     <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
-                        USADO
+                        class="inline-block text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start" [ngClass]="{
+          'bg-green-100 text-green-800': prod.estado === 'NUEVO',
+          'bg-yellow-100 text-yellow-800': prod.estado === 'USADO'
+        }">
+                        {{ prod.estado }}
                     </span>
-                    <h3 class="text-xl font-bold text-gray-900">$850.00</h3>
+                    <h3 class="text-xl font-bold text-gray-900">{{ prod.precio | currency : 'USD' : 'symbol' : '1.2-2' }}</h3>
                     <p class="text-sm text-gray-700 mt-1 flex-grow">
-                        Macbook Pro 14" M1 Pro 16GB RAM (2021)
-                    </p>
-                    <p class="text-xs text-gray-500 mt-3">
-                        San Salvador · Hoy, 10:30 AM
+                        {{ prod.titulo }}
                     </p>
 
-                    <button (click)="abrirPasarela({ titulo: 'Macbook Pro 14', precio: 850 })"
+                    <button (click)="abrirPasarela(prod)"
                         class="mt-4 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
                             <path
@@ -128,183 +130,7 @@
 
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </button>
-                <a href="#">
-                    <img src="https://i.blogs.es/5e1e66/samsung-galaxy-s24-ultra_2274-mejorado-nr/1200_900.jpeg" alt="Producto 2"
-                        class="w-full h-40 object-cover">
-                </a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
-                        NUEVO
-                    </span>
-                    <h3 class="text-xl font-bold text-gray-900">$1,199.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">
-                        Smartphone Galaxy Ultra 256GB Sellado
-                    </p>
-                    <p class="text-xs text-gray-500 mt-3">
-                        Santa Ana · Ayer, 08:15 PM
-                    </p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </button>
-                <a href="#">
-                    <img src="https://siman.vtexassets.com/arquivos/ids/7269638/consola-ps5-playstation-5-standard-sony-slim-astrobot-gt7-consola-ps5-playstation-5-standard-sony-slim-astrobot-gt7.jpg?v=638932054033170000" alt="Producto 3"
-                        class="w-full h-40 object-cover">
-                </a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
-                        USADO
-                    </span>
-                    <h3 class="text-xl font-bold text-gray-900">$450.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">
-                        Consola PS5 Edición Disco + 2 Controles
-                    </p>
-                    <p class="text-xs text-gray-500 mt-3">
-                        San Miguel · Hace 2 horas
-                    </p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </button>
-                <a href="#">
-                    <img src="https://diamu.com.bd/wp-content/uploads/2025/08/JBL-Tour-One-M3-Smart-Tx-Over-Ear-Headphones.jpg" alt="Producto 4"
-                        class="w-full h-40 object-cover">
-                </a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
-                        NUEVO
-                    </span>
-                    <h3 class="text-xl font-bold text-gray-900">$220.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">
-                        Audífonos Pro con Cancelación de Ruido
-                    </p>
-                    <p class="text-xs text-gray-500 mt-3">
-                        La Libertad · Hoy, 09:00 AM
-                    </p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                        stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </button>
-                <a href="#">
-                    <img src="https://master-g.com.bo/wp-content/uploads/2025/06/MGMG2730C-03.png" alt="Producto 5"
-                        class="w-full h-40 object-cover">
-                </a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">
-                        USADO
-                    </span>
-                    <h3 class="text-xl font-bold text-gray-900">$300.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">
-                        Monitor Gamer Curvo 27" 144Hz 1ms
-                    </p>
-                    <p class="text-xs text-gray-500 mt-3">
-                        Santa Tecla · Hace 5 días
-                    </p>
-                </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://virtualbusinesscusco.com/wp-content/uploads/2024/11/TARJETA-GRAFICA-NVIDIA-EVGA-GeForce-RTX-3070Ti-8GB.jpg.webp" alt="Producto 6"
-                        class="w-full h-40 object-cover"></a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
-                    <h3 class="text-xl font-bold text-gray-900">$650.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">Tarjeta de Video RTX 3070 8GB</p>
-                    <p class="text-xs text-gray-500 mt-3">San Salvador · Hoy, 11:15 AM</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://ae01.alicdn.com/kf/Sd7b3abae6c4e47f5a9a01ec234c797430.jpg" alt="Producto 7"
-                        class="w-full h-40 object-cover"></a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
-                    <h3 class="text-xl font-bold text-gray-900">$420.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">Tablet Pro 11" 128GB + Lápiz</p>
-                    <p class="text-xs text-gray-500 mt-3">Antiguo Cuscatlán · Ayer, 04:00 PM</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://plazavea.vteximg.com.br/arquivos/ids/29093641-418-418/image-d3f3aee1f49f499e954ef4e3e68aa4be.jpg" alt="Producto 8"
-                        class="w-full h-40 object-cover"></a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
-                    <h3 class="text-xl font-bold text-gray-900">$110.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">Teclado Mecánico Inalámbrico 65%</p>
-                    <p class="text-xs text-gray-500 mt-3">San Salvador · Hace 1 hora</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://modelforce.eu/wp-content/uploads/2022/10/modelforce.eu-osta-droon-dji-mini-2-fly-more-combo-tallinnas-5-scaled.jpg" alt="Producto 9"
-                        class="w-full h-40 object-cover"></a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">USADO</span>
-                    <h3 class="text-xl font-bold text-gray-900">$380.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">Drone Mini 2 Fly More Combo</p>
-                    <p class="text-xs text-gray-500 mt-3">La Libertad · Hace 3 días</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
-                <button
-                    class="absolute top-2 right-2 p-1.5 bg-white/70 rounded-full text-gray-600 hover:text-red-500 hover:bg-white transition-all duration-200">...</button>
-                <a href="#"><img src="https://m.media-amazon.com/images/I/61wQ31boI-L.jpg" alt="Producto 10"
-                        class="w-full h-40 object-cover"></a>
-                <div class="p-3 flex flex-col flex-grow">
-                    <span
-                        class="inline-block bg-green-100 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full mb-2 self-start">NUEVO</span>
-                    <h3 class="text-xl font-bold text-gray-900">$299.00</h3>
-                    <p class="text-sm text-gray-700 mt-1 flex-grow">Smartwatch Series 9 GPS</p>
-                    <p class="text-xs text-gray-500 mt-3">San Salvador · Hoy, 12:00 PM</p>
-                </div>
-            </div>
+            </ng-container>
 
         </div>
 
@@ -320,7 +146,7 @@
             </div>
 
             <div class="relative z-10 w-full max-w-md">
-                <app-payment-gateway [producto]="productoSeleccionado" (close)="cerrarPasarela()">
+                <app-payment-gateway [producto]="productoSeleccionado" (closed)="cerrarPasarela()" (paymentSuccess)="onPagoExitoso($event)">
                 </app-payment-gateway>
             </div>
         </div>
