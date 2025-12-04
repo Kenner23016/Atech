@@ -18,34 +18,82 @@
       <button (click)="cerrarModal()" class="bg-gray-800 text-white px-6 py-2 rounded hover:bg-gray-700">Cerrar</button>
     </div>
 
-    <form *ngIf="!success" [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+    <form *ngIf="!success" [formGroup]="paymentForm" (ngSubmit)="onSubmit()" novalidate>
       
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Titular</label>
-        <input formControlName="cardHolder" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nombre como aparece en la tarjeta">
+        <input
+          formControlName="cardHolder"
+          type="text"
+          (input)="onCardHolderInput($event)"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="Nombre como aparece en la tarjeta">
+        <div *ngIf="paymentForm.get('cardHolder')?.touched && paymentForm.get('cardHolder')?.invalid" 
+             class="text-red-500 text-xs mt-1">
+          {{ getErrorMessage('cardHolder') }}
+        </div>
       </div>
 
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700 mb-1">Número de Tarjeta</label>
-        <input formControlName="cardNumber" type="text" maxlength="16" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="0000 0000 0000 0000">
+        <input
+          formControlName="cardNumber"
+          type="text"
+          maxlength="19"
+          inputmode="numeric"
+          (input)="onCardNumberInput($event)"
+          class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+          placeholder="0000-0000-0000-0000">
+        <div *ngIf="paymentForm.get('cardNumber')?.touched && paymentForm.get('cardNumber')?.invalid" 
+             class="text-red-500 text-xs mt-1">
+          {{ getErrorMessage('cardNumber') }}
+        </div>
       </div>
 
       <div class="flex gap-4 mb-6">
         <div class="w-1/2">
           <label class="block text-sm font-medium text-gray-700 mb-1">Expiración</label>
-          <input formControlName="expiry" type="text" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="MM/YY">
+          <input
+            formControlName="expiry"
+            type="text"
+            maxlength="10"
+            inputmode="numeric"
+            (input)="onDateInput($event)"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+            placeholder="DD/MM/AAAA">
+          <div *ngIf="paymentForm.get('expiry')?.touched && paymentForm.get('expiry')?.invalid" 
+               class="text-red-500 text-xs mt-1">
+            {{ getErrorMessage('expiry') }}
+          </div>
         </div>
         <div class="w-1/2">
           <label class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-          <input formControlName="cvv" type="password" maxlength="3" class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none" placeholder="123">
+          <input
+            formControlName="cvv"
+            type="password"
+            maxlength="3"
+            inputmode="numeric"
+            (input)="onCvvInput($event)"
+            class="w-full border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+            placeholder="123">
+          <div *ngIf="paymentForm.get('cvv')?.touched && paymentForm.get('cvv')?.invalid" 
+               class="text-red-500 text-xs mt-1">
+            {{ getErrorMessage('cvv') }}
+          </div>
         </div>
       </div>
 
-      <button type="submit" [disabled]="paymentForm.invalid || isLoading" 
-              class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition disabled:opacity-50 flex justify-center">
+      <button
+        type="submit"
+        [disabled]="paymentForm.invalid || isLoading" 
+        class="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 transition disabled:opacity-50 flex justify-center">
         <span *ngIf="!isLoading">Pagar Ahora</span>
         <span *ngIf="isLoading">Procesando...</span>
       </button>
+      
+      <p class="text-xs text-gray-500 text-center mt-4">
+        Gracias por comprar en Atech.
+      </p>
     </form>
   </div>
 </div>

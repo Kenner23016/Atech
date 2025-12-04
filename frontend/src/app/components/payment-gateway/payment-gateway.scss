@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+// Estilos para errores de validación
+input.ng-invalid.ng-touched {
+  border-color: #f87171;
+  
+  &:focus {
+    ring-color: #f87171;
+    border-color: #f87171;
+  }
+}
+
+// Animación para el botón de carga
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
