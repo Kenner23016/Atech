@@ -116,6 +116,16 @@
                     <p class="text-xs text-gray-500 mt-3">
                         San Salvador · Hoy, 10:30 AM
                     </p>
+
+                    <button (click)="abrirPasarela({ titulo: 'Macbook Pro 14', precio: 850 })"
+                        class="mt-4 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path
+                                d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 10.232a2.25 2.25 0 002.183 1.69h7.124a2.25 2.25 0 002.183-1.69l1.15-4.6a2.25 2.25 0 00-2.183-2.79h-8.516l-.33-1.32h8.845a.75.75 0 000-1.5H6.56l-.33-1.32A2.25 2.25 0 004.047 2.25H2.25zM9.375 20.25a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0zm9.75 0a1.125 1.125 0 11-2.25 0 1.125 1.125 0 012.25 0z" />
+                        </svg>
+                        Comprar
+                    </button>
+
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 flex flex-col relative">
@@ -303,6 +313,16 @@
                 class="bg-white text-atech-blue font-semibold py-3 px-8 rounded-full border-2 border-atech-blue hover:bg-atech-blue hover:text-white transition-all duration-300">
                 Cargar más anuncios
             </button>
+        </div>
+        <div *ngIf="mostrarPasarela" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+
+            <div class="absolute inset-0 bg-gray-900/30 backdrop-blur-sm transition-opacity" (click)="cerrarPasarela()">
+            </div>
+
+            <div class="relative z-10 w-full max-w-md">
+                <app-payment-gateway [producto]="productoSeleccionado" (close)="cerrarPasarela()">
+                </app-payment-gateway>
+            </div>
         </div>
 
     </main>
