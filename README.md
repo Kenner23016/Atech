@@ -249,7 +249,7 @@ de producción en local utilizando el `docker-compose.prod.yml` :
 ```bash
 docker compose -f docker-compose.prod.yml up -d
 ```
-Validar en el navegador usando `127.0.0.1:8081:4200` 
+Validar en el navegador usando `http://localhost:8081` 
 
 Asegúrate de que `docker-compose.prod.yml` esté configurado para usar las imágenes:
 - `kenner23016/atech-backend:$TAG`
