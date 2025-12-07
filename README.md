@@ -244,11 +244,12 @@ docker build -t kenner23016/atech-frontend:$TAG   -f frontend/Dockerfile.prod ./
 ### 10.4 Probar el entorno de producción en local (sin Docker Hub)
 
 Una vez construidas ambas imágenes de producción **en tu máquina**, puedes levantar el stack
-de producción en local utilizando el `docker-compose.prod.yml`:
+de producción en local utilizando el `docker-compose.prod.yml` :
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d
 ```
+Validar en el navegador usando `127.0.0.1:8081:4200` 
 
 Asegúrate de que `docker-compose.prod.yml` esté configurado para usar las imágenes:
 - `kenner23016/atech-backend:$TAG`
