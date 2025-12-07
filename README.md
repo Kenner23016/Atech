@@ -267,12 +267,6 @@ docker compose -f docker-compose.prod.yml ps
 docker compose -f docker-compose.prod.yml logs -f
 ```
 
-Los servicios deberían estar expuestos en los mismos puertos configurados para producción
-(según tu `docker-compose.prod.yml`), normalmente:
-
-- **Frontend (prod):** <http://localhost:80> o el puerto que hayas definido.
-- **Backend (prod):** <http://localhost:8080> (o el mapeo que defina tu compose).
-
 ---
 
 ## ■ 11) Flujo completo de despliegue a producción con Docker Hub
@@ -335,21 +329,9 @@ docker pull kenner23016/atech-backend:$TAG
 docker compose -f docker-compose.prod.yml up -d
 ```
 
-`docker-compose.prod.yml` debe estar configurado para usar las imágenes con ese tag, por
-ejemplo:
-
-```yaml
-services:
-  backend:
-    image: kenner23016/atech-backend:${TAG}
-    # ...
-  frontend:
-    image: kenner23016/atech-frontend:${TAG}
-    # ...
-```
 
 De esta forma:
-- Puedes **versionar** claramente cada despliegue usando el valor de `TAG`.
+- Intentamos **versionar** claramente cada despliegue usando el valor de `TAG`.
 - El servidor solo necesita hacer `pull` de las imágenes ya probadas.
 - El mismo archivo `docker-compose.prod.yml` sirve tanto para pruebas de producción en local
   como para el entorno de producción real, cambiando únicamente el valor de `TAG` y las
