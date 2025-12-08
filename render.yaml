@@ -1,0 +1,85 @@
+databases:
+  - name: atech-db
+    databaseName: atechdb
+    plan: free          # puedes subir de plan si lo necesitas
+    region: oregon      # cámbialo si usas otra región en Render
+
+services:
+  # ===========================
+  # BACKEND: Spring Boot (Docker)
+  # ===========================
+  - type: web
+    name: atech-backend
+    runtime: docker
+    plan: free
+    region: oregon
+
+    # El repo y branch se infieren del repo donde está este render.yaml
+    dockerfilePath: backend/Atech/Dockerfile.prod
+    dockerContext: backend
+
+    envVars:
+      # Render necesita saber en qué puerto escucha tu contenedor
+      - key: PORT
+        value: "8080"
+
+      # Perfil de Spring (opcional pero útil)
+      - key: SPRING_PROFILES_ACTIVE
+        value: "prod"
+
+      # Conexión a la base de datos de Render → usamos las variables DB_*
+      - key: DB_HOST
+        fromDatabase:
+          name: atech-db
+          property: host
+
+      - key: DB_PORT
+        fromDatabase:
+          name: atech-db
+          property: port
+
+      - key: DB_NAME
+        fromDatabase:
+          name: atech-db
+          property: database
+
+      - key: DB_USER
+        fromDatabase:
+          name: atech-db
+          property: user
+
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: atech-db
+          property: password
+
+  # ===========================
+  # FRONTEND: Angular + Nginx (Docker)
+  # ===========================
+  - type: web
+    name: atech-frontend
+    runtime: docker
+    plan: free
+    region: oregon
+
+    dockerfilePath: frontend/Dockerfile.prod
+    dockerContext: frontend
+
+    envVars:
+      # Nginx escucha en 80 dentro del contenedor
+      - key: PORT
+        value: "80"
+
+      # Host y puerto internos del backend en la red privada de Render
+      - key: BACKEND_HOST
+        fromService:
+          name: atech-backend
+          type: web
+          property: host
+
+      - key: BACKEND_PORT
+        fromService:
+          name: atech-backend
+          type: web
+          property: port
+
